@@ -120,6 +120,7 @@ public class AddRecordDialog extends JDialog implements ActionListener {
 		this.parent.addRecord(theEmployee);
 		this.parent.displayRecords(theEmployee);
 	}
+	
 
 	// check for input in text fields
 	public boolean checkInput() {
@@ -129,7 +130,7 @@ public class AddRecordDialog extends JDialog implements ActionListener {
 			ppsField.setBackground(new Color(255, 150, 150));
 			valid = false;
 		}// end if
-		if (this.parent.incorrectPPS(this.ppsField.getText().trim(), -1)) {
+		if (this.parent.incorrectPPS(this.ppsField.getText().trim())) {
 			ppsField.setBackground(new Color(255, 150, 150));
 			valid = false;
 		}// end if
@@ -184,16 +185,17 @@ public class AddRecordDialog extends JDialog implements ActionListener {
 		// if chosen option save, save record to file
 		if (e.getSource() == save) {
 			// if inputs correct, save record
-			if (checkInput()) {
+			if (!checkInput()) {
+				JOptionPane.showMessageDialog(null, "Wrong values or format! Please check!");
+				setToWhite();
+			}else if(this.parent.PPSExists(this.ppsField.getText().trim(), -1)) {
+				setToWhite();
+			}
+			else {
 				addRecord();// add record to file
 				dispose();// dispose dialog
 				this.parent.changesMade = true;
 			}// end if
-			// else display message and set text fields to white colour
-			else {
-				JOptionPane.showMessageDialog(null, "Wrong values or format! Please check!");
-				setToWhite();
-			}// end else
 		}// end if
 		else if (e.getSource() == cancel)
 			dispose();// dispose dialog

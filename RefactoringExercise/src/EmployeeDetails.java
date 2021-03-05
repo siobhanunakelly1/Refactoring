@@ -649,12 +649,8 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		return someoneToDisplay;
 	}// end isSomeoneToDisplay
 
-	
-	public boolean incorrectPPS(String pps, long currentByte) {
-		application.openReadFile(file.getAbsolutePath());
-		boolean ppsExist = application.isPpsExist(pps, currentByte);
-		application.closeReadFile();// close file for reading
-		if(pps.length() != 7 || !Character.isLetter(pps.charAt(6))|| ppsExist) 
+	public boolean incorrectPPS(String pps) {
+		if(pps.length() != 7 || !Character.isLetter(pps.charAt(6))) 
 			return true;
 		
 		for(int i =0; i <pps.length()-1; i++) {
@@ -663,6 +659,14 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		}
 		return false;
 	}
+	
+	public boolean PPSExists(String pps, long currentByte) {
+		application.openReadFile(file.getAbsolutePath());
+		boolean ppsExist = application.isPpsExist(pps, currentByte);
+		application.closeReadFile();// close file for reading
+		return ppsExist;
+	}
+
 
 	// check if file name has extension .dat
 	private boolean checkFileName(File fileName) {
@@ -695,7 +699,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 	}// end checkForChanges
 
 	// check for input in text fields
-	private boolean checkInput() {
+	public boolean checkInput() {
 		boolean valid = true;
 		// if any of inputs are in wrong format, colour text field and display
 		// message
@@ -703,7 +707,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 			ppsField.setBackground(new Color(255, 150, 150));
 			valid = false;
 		} // end if
-		if (ppsField.isEditable() && correctPps(ppsField.getText().trim(), currentByteStart)) {
+		if (ppsField.isEditable() && incorrectPPS(ppsField.getText().trim())) {
 			ppsField.setBackground(new Color(255, 150, 150));
 			valid = false;
 		} // end if
