@@ -673,6 +673,20 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 
 		return ppsExist;
 	}// end correctPPS
+	
+	public boolean incorrectPPS(String pps, long currentByte) {
+		application.openReadFile(file.getAbsolutePath());
+		boolean ppsExist = application.isPpsExist(pps, currentByte);
+		application.closeReadFile();// close file for reading
+		if(pps.length() != 7 || !Character.isLetter(pps.charAt(6))|| ppsExist) 
+			return true;
+		
+		for(int i =0; i <pps.length()-1; i++) {
+			if(!Character.isDigit(pps.charAt(i)))
+					return true;
+		}
+		return false;
+	}
 
 	// check if file name has extension .dat
 	private boolean checkFileName(File fileName) {
