@@ -86,6 +86,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 	// full time combo box values
 	String[] fullTime = { "", "Yes", "No" };
 
+	boolean editOrNew = true;
 	// initialize menu bar
 	private JMenuBar menuBar() {
 		JMenuBar menuBar = new JMenuBar();
@@ -608,6 +609,35 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 
 		return allEmployee;
 	}// end getAllEmployees
+	
+	public void addRecord() {
+		boolean fullTime = false;
+		Employee theEmployee;
+		
+		if (((String) fullTimeCombo.getSelectedItem()).equalsIgnoreCase("Yes"))
+			fullTime = true;
+		// create new Employee record with details from text fields
+		theEmployee = new Employee(Integer.parseInt(idField.getText()), ppsField.getText().toUpperCase(), surnameField.getText().toUpperCase(),
+				firstNameField.getText().toUpperCase(), genderCombo.getSelectedItem().toString().charAt(0),
+				departmentCombo.getSelectedItem().toString(), Double.parseDouble(salaryField.getText()), fullTime);
+		this.currentEmployee = theEmployee;
+		this.addRecord(theEmployee);
+		this.displayRecords(theEmployee);
+		setEnabled(false);
+	}
+	
+	private void addRecordDetails() {
+		editOrNew = false;
+		setEnabled(true);
+		idField.setText(Integer.toString(getNextFreeId()));
+		ppsField.setText("");
+		surnameField.setText("");
+		firstNameField.setText("");
+		salaryField.setText("");
+		genderCombo.setSelectedIndex(-1);
+		departmentCombo.setSelectedIndex(-1);
+		fullTimeCombo.setSelectedIndex(-1);
+	}
 
 	// activate field for editing
 	private void editDetails() {
@@ -799,7 +829,7 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		// if old file is not empty or changes has been made, offer user to save
 		// old file
 		if (file.length() != 0 || change) {
-			int returnVal = JOptionPane.showOptionDialog(frame, "Do you want to save changes?", "Save",
+			int returnVal = JOptionPane.showOptionDialog(frame, "Do you want to save?", "Save",
 					JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 			// if user wants to save file, save it
 			if (returnVal == JOptionPane.YES_OPTION) {
@@ -1004,8 +1034,18 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 		else if (e.getSource() == searchSurname || e.getSource() == searchBySurnameField)
 			searchEmployeeBySurname();
 		else if (e.getSource() == saveChange) {
-			if (checkInput() && !checkForChanges())
-				;
+			if (!checkInput()) {
+				setToWhite();
+			}else if(PPSExists(this.ppsField.getText().trim(), -1)) {
+				setToWhite();
+			}else {
+				if(editOrNew == false) { 
+					addRecord();
+				}
+				else if (!checkForChanges())
+					;
+			}
+				
 		} else if (e.getSource() == cancelChange)
 			cancelChange();
 		else if (e.getSource() == firstItem || e.getSource() == first) {
@@ -1033,8 +1073,9 @@ public class EmployeeDetails extends JFrame implements ActionListener, ItemListe
 				if (isSomeoneToDisplay())
 					displayEmployeeSummaryDialog();
 		} else if (e.getSource() == create || e.getSource() == add) {
-			if (checkInput() && !checkForChanges())
-				new AddRecordDialog(EmployeeDetails.this);
+			if (checkInput() && !checkForChanges()) {
+				addRecordDetails();
+			}
 		} else if (e.getSource() == modify || e.getSource() == edit) {
 			if (checkInput() && !checkForChanges())
 				editDetails();
