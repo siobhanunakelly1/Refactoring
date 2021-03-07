@@ -162,7 +162,11 @@ public class RandomFile {
 	public long getFirst() {
 		long byteToStart = 0;
 
-		byteToStart = RandomAccessEmployeeRecord.SIZE;
+		try {// try to get file
+			input.length();
+		} // end try
+		catch (IOException e) {
+		}// end catch
 		
 		return byteToStart;
 	}// end getFirst
@@ -181,7 +185,7 @@ public class RandomFile {
 	}// end getFirst
 
 	// Get position of next record in file
-	public long getPrevious(long readFrom) {
+	public long getNext(long readFrom) {
 		long byteToStart = readFrom;
 
 		try {// try to read from file
@@ -200,7 +204,7 @@ public class RandomFile {
 	}// end getFirst
 
 	// Get position of previous record in file
-	public long getNext(long readFrom) {
+	public long getPrevious(long readFrom) {
 		long byteToStart = readFrom;
 
 		try {// try to read from file
